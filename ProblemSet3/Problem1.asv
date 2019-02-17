@@ -42,4 +42,3 @@ theta_out = (2/pi) * theta_out;
 temp = theta_out*(t2-t1) + t1;
 end
 
-
