@@ -10,14 +10,14 @@ load('SphereData.mat')
 % Concatente the two trials for heating and cooling
 % Sort the data so that the times are in order and use the order output argument
 %   to sort the temperatures accordinly
-[t_heating,order_h] = sort([sphere_data(1).time;sphere_data(3).time]);
-[t_cooling,order_c] = sort([sphere_data(2).time;sphere_data(4).time]);
+[t_heating,order_h] = sort([sphere_data(1).time]);%sphere_data(3).time]);
+[t_cooling,order_c] = sort([sphere_data(2).time]);%sphere_data(4).time]);
 
-T_heating = [sphere_data(1).ss_cent,sphere_data(1).ss_surf,sphere_data(1).cu_surf,sphere_data(1).cu_cent;
-             sphere_data(3).ss_cent,sphere_data(3).ss_surf,sphere_data(3).cu_surf,sphere_data(3).cu_cent];
+T_heating = [sphere_data(1).ss_cent,sphere_data(1).ss_surf,sphere_data(1).cu_surf,sphere_data(1).cu_cent];
+             %sphere_data(3).ss_cent,sphere_data(3).ss_surf,sphere_data(3).cu_surf,sphere_data(3).cu_cent];
          
-T_cooling = [sphere_data(2).ss_cent,sphere_data(2).ss_surf,sphere_data(2).cu_surf,sphere_data(2).cu_cent;
-             sphere_data(4).ss_cent,sphere_data(4).ss_surf,sphere_data(4).cu_surf,sphere_data(4).cu_cent];
+T_cooling = [sphere_data(2).ss_cent,sphere_data(2).ss_surf,sphere_data(2).cu_surf,sphere_data(2).cu_cent];
+             %sphere_data(4).ss_cent,sphere_data(4).ss_surf,sphere_data(4).cu_surf,sphere_data(4).cu_cent];
     
 T_heating = T_heating(order_h,:);
 T_cooling = T_cooling(order_c,:);
@@ -68,11 +68,11 @@ figure('Name','ln(theta) linear fit')
 ln_theta = log(theta);
 
 % Crop the linear region of the plots
-t_crop = t(40:280);
-T1_crop = ln_theta(40:280,1);
-T2_crop = ln_theta(40:280,2);
-T3_crop = ln_theta(40:280,3);
-T4_crop = ln_theta(40:280,4);
+t_crop = t(40:220);
+T1_crop = ln_theta(40:220,1);
+T2_crop = ln_theta(40:220,2);
+T3_crop = ln_theta(40:220,3);
+T4_crop = ln_theta(40:220,4);
 
 
 %%% Apply a linear fit to the four cases
@@ -121,7 +121,6 @@ plot_title = sprintf('ln(\\theta) : Trial %s',trial);
 title(plot_title)
 
 
-
 %%%  --->  Fit the copper sphere thermal response curves  <---  %%%
 figure('Name','Copper Thermal Response')
 
@@ -133,6 +132,11 @@ h = 1800; %initial value
 rho = 8933; % kg/m^3
 cp = 385;   % J/kgK
 k = 401; % W/m*k
+
+
+% Calculate h
+h = determine_h(T3_crop,rho,V,As,cp,t_crop,r,'Cu');
+
 
 % Calculations for Bi and thermal resistance
 Bi = h*r/k;
@@ -255,6 +259,25 @@ set(gca,'FontSize',fs-2);
 end
 
 
+% Calculate the value of h
+function h = determine_h(ln_theta,rho,V,A_s,C,t,r,trial)
+
+%h = ((-rho.*V.*C.*t)./A_s) .* (1./ln_theta);
+h = (-rho.*C.*r .* ln_theta) ./ t;
+
+if length(h) > 1
+    h = mean(h);
+end
+
+fprintf('H for trial %s: %.2f\n',trial,h)
+
+end
+
+
+
+
+
+
 
 %%%  --->  Deprecated Functions  <---  %%%
 
@@ -319,18 +342,6 @@ plot(t,t*m_T1+b_T1,'k',t,t*m_T2+b_T2,'k')
 title(plot_title,'Fontsize',16)
 xlabel('Time (s)','linewidth',2)
 ylabel('ln(\theta)','linewidth',2)
-
-end
-
-function h = determine_h(T_sur,T_i,T_inf,rho,V,A_s,C,trial)
-
-q = (rho*V*C.*(T_i-T_inf));
-
-rhs = A_s.*(T_sur(1:20)-T_inf);
-
-h = rhs\q;
-
-fprintf('H for trial %d: %.2f\n',trial,h)
 
 end
 
