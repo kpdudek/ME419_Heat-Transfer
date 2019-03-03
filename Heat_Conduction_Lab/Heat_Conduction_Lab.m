@@ -3,31 +3,9 @@ close all
 clear all
 clc
 
-load('SphereData.mat')
+load('Sphere_Data2.mat')
 
 %%%  --->  Data Analysis For all Four Trials  <---  %%%
-% time_heat = [];
-% theta_heat = [];
-% lumped_cu_heat = [];
-% T_heat = [];
-% T_Center_Codel_heat = [];
-% T_Surface_Model_heat = [];
-% lumped_ss_heat = [];
-% 
-% time_cool = [];
-% theta_cool = [];
-% lumped_cu_cool = [];
-% T_cool = [];
-% T_Center_Codel_cool = [];
-% T_Surface_Model_cool = [];
-% lumped_ss_cool = [];
-
-
-% for trial = 1:length(sphere_data)
-%     
-%     
-% end
-
 [t_heating,order_h] = sort([sphere_data(1).time;sphere_data(3).time]);
 [t_cooling,order_c] = sort([sphere_data(2).time;sphere_data(4).time]);
 
@@ -73,15 +51,25 @@ fprintf("T_inf = %.2f\n",T_inf)
 
 theta = (T - T_inf)./(T_i - T_inf);
 semilogy(t,theta,'linewidth',lw)
-hold on
 
-theta = log10(theta);
+legend('Steel center','Steel surface','Copper Surface','Copper Center')
+set(gca,'FontSize',fs-2);
+xlabel('Time (sec)','Fontsize',fs)
+ylabel('ln(\theta)','Fontsize',fs)
+plot_title = sprintf('Sphere Temperatures : Trial %s',trial);
+title(plot_title)
 
-t_crop = t(40:80);
-T1_crop = theta(40:80,1);
-T2_crop = theta(40:80,2);
-T3_crop = theta(40:80,3);
-T4_crop = theta(40:80,4);
+
+
+figure('Name','ln(theta) linear fit')
+
+ln_theta = log(theta);
+
+t_crop = t(40:280);
+T1_crop = ln_theta(40:280,1);
+T2_crop = ln_theta(40:280,2);
+T3_crop = ln_theta(40:280,3);
+T4_crop = ln_theta(40:280,4);
 
 lin_T1 = fitlm(t_crop,T1_crop,'linear');
 b_T1 = table2array(lin_T1.Coefficients(1,'Estimate'));
@@ -99,16 +87,22 @@ lin_T4 = fitlm(t_crop,T4_crop,'linear');
 b_T4 = table2array(lin_T4.Coefficients(1,'Estimate'));
 m_T4 = table2array(lin_T4.Coefficients(2,'Estimate'));
 
+plot(t_crop,T1_crop,'bo',t_crop,T2_crop,'bs',t_crop,T3_crop,'rs',t_crop,T4_crop,'ro','MarkerSize',8,'LineWidth',1.7)
+hold on
+plot(t_crop,t_crop.*m_T1+b_T1,'k',t_crop,t_crop.*m_T2+b_T2,'k',t_crop,t_crop.*m_T3+b_T3,'k',t_crop,t_crop.*m_T4+b_T4,'k')
 
-semilogy(t_crop,t_crop.*m_T1+b_T1,'k','LineWidth',2)%,t_crop,t_crop.*m_T2+b_T2,'k',t_crop,t_crop.*m_T3+b_T3,'k',t_crop,t_crop.*m_T4+b_T4,'k')
+eq_T1 = sprintf('\\theta = %.4ft+%.4f',m_T1,b_T1);
+eq_T2 = sprintf('\\theta = %.4ft+%.4f',m_T2,b_T2);
+eq_T3 = sprintf('\\theta = %.4ft+%.4f',m_T3,b_T3);
+eq_T4 = sprintf('\\theta = %.4ft+%.4f',m_T4,b_T4);
 
-
-legend('Steel center','Steel surface','Copper center','Copper surface')
+legend('Steel center','Steel surface','Copper Surface','Copper Center',eq_T1,eq_T2,eq_T3,eq_T4)
 set(gca,'FontSize',fs-2);
 xlabel('Time (sec)','Fontsize',fs)
-ylabel('Temperature (\circC)','Fontsize',fs)
-plot_title = sprintf('Sphere Temperatures : Trial %s',trial);
+ylabel('ln(\theta)','Fontsize',fs)
+plot_title = sprintf('ln(\\theta) : Trial %s',trial);
 title(plot_title)
+
 
 
 %%%  --->  Fit the copper sphere cooling curves  <---  %%%
