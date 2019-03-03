@@ -103,7 +103,7 @@ m_T4 = table2array(lin_T4.Coefficients(2,'Estimate'));
 plot(t_crop,T1_crop,'bo',t_crop,T2_crop,'bs',t_crop,T3_crop,'rs',t_crop,T4_crop,'ro','MarkerSize',10,'LineWidth',1.7)
 hold on
 % Plot the linear fits
-plot(t_crop,t_crop.*m_T1+b_T1,'g',t_crop,t_crop.*m_T2+b_T2,'k',t_crop,t_crop.*m_T3+b_T3,'g-',t_crop,t_crop.*m_T4+b_T4,'k-','LineWidth',2)
+plot(t_crop,t_crop.*m_T1+b_T1,'g',t_crop,t_crop.*m_T2+b_T2,'k',t_crop,t_crop.*m_T3+b_T3,'g--',t_crop,t_crop.*m_T4+b_T4,'k--','LineWidth',2)
 
 % Form strings for the legend
 eq_T1 = sprintf('\\theta = %.4ft+%.4f : SS Center',m_T1,b_T1);
@@ -113,7 +113,7 @@ eq_T4 = sprintf('\\theta = %.4ft+%.4f : Cu Center',m_T4,b_T4);
 
 % Set plot appearance
 lgnd = legend('Steel center','Steel surface','Copper Surface','Copper Center',eq_T1,eq_T2,eq_T3,eq_T4,'Location','northeast');
-lgnd.FontSize = 12; lgnd.NumColumns = 2;
+lgnd.FontSize = 12; %lgnd.NumColumns = 2;
 set(gca,'FontSize',fs-2);
 xlabel('Time (sec)','Fontsize',fs)
 ylabel('ln(\theta)','Fontsize',fs)
@@ -262,8 +262,8 @@ end
 % Calculate the value of h
 function h = determine_h(ln_theta,rho,V,A_s,C,t,r,trial)
 
-%h = ((-rho.*V.*C.*t)./A_s) .* (1./ln_theta);
-h = (-rho.*C.*r .* ln_theta) ./ t;
+h = ((-rho.*V.*C.*t)./A_s) .* (1./ln_theta);
+%h = (-rho.*C.*r .* ln_theta) ./ t;
 
 if length(h) > 1
     h = mean(h);
