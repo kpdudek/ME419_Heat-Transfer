@@ -33,7 +33,37 @@ for trial = 1:length(sphere_data)
     
     theta = (T - T_inf)./(T_i - T_inf);
     semilogy(t,theta,'linewidth',lw)
-    legend('Steel center','Steel surface','Copper center','Copper surface')
+    hold on
+    
+    %theta = log(theta);
+    % linear fit for brass
+    t_crop = t(40:80);
+    T1_crop = theta(40:80,1);
+    T2_crop = theta(40:80,2);
+    T3_crop = theta(40:80,3);
+    T4_crop = theta(40:80,4);
+    
+    lin_T1 = fitlm(t_crop,T1_crop,'linear');
+    b_T1 = table2array(lin_T1.Coefficients(1,'Estimate'));
+    m_T1 = table2array(lin_T1.Coefficients(2,'Estimate'));
+    
+    lin_T2 = fitlm(t_crop,T2_crop,'linear');
+    b_T2 = table2array(lin_T2.Coefficients(1,'Estimate'));
+    m_T2 = table2array(lin_T2.Coefficients(2,'Estimate'));
+    
+    lin_T3 = fitlm(t_crop,T3_crop,'linear');
+    b_T3 = table2array(lin_T3.Coefficients(1,'Estimate'));
+    m_T3 = table2array(lin_T3.Coefficients(2,'Estimate'));
+    
+    lin_T4 = fitlm(t_crop,T4_crop,'linear');
+    b_T4 = table2array(lin_T4.Coefficients(1,'Estimate'));
+    m_T4 = table2array(lin_T4.Coefficients(2,'Estimate'));
+    
+    
+    semilogy(t_crop,(.1.^(-t_crop.*m_T1+b_T1))+10^.5,'k','LineWidth',2)%,t_crop,t_crop.*m_T2+b_T2,'k',t_crop,t_crop.*m_T3+b_T3,'k',t_crop,t_crop.*m_T4+b_T4,'k')
+    
+    
+    %legend('Steel center','Steel surface','Copper center','Copper surface')
     set(gca,'FontSize',fs-2);
     xlabel('Time (sec)','Fontsize',fs)
     ylabel('Temperature (\circC)','Fontsize',fs)
@@ -75,8 +105,9 @@ for trial = 1:length(sphere_data)
     
     %h = determine_h(sphere_data(trial).cu_surf,T_i,T_inf,rho,V,As,cp,trial);
     
-    log_dimensionless_temp(t,sphere_data(trial).cu_surf,T_i,T_inf,trial,'Cu_Surf')
-    log_dimensionless_temp(t,sphere_data(trial).cu_cent,T_i,T_inf,trial,'Cu_Surf')
+    %log_dimensionless_temp(t,sphere_data(trial).cu_surf,sphere_data(trial).cu_cent,T_i,T_inf,trial,'Cu')
+    
+    %lin_fit_logs(t,sphere_data(trial).cu_surf,sphere_data(trial).cu_cent,trial,'SS')
     
     %determine_Bi(t,sphere_data(trial).cu_surf,T_i,T_inf,r,rho,cp,k,trial,'Cu')
     
@@ -141,11 +172,13 @@ for trial = 1:length(sphere_data)
     
     % Plot series values
     plot(t,T_center_model,'g','linewidth',lw)   % plot the model
+    hold on
     plot(t,T_surface_model,'g','linewidth',lw)   % plot the model
+    hold on
     
     % Plot lumped capacitance
     T_steel = T_inf + (T_i-T_inf)*exp(-t/tau); % lumped
-    plot(t(1:10:end),T_steel(1:10:end))
+    plot(t(1:10:end),T_steel(1:10:end),'b')
     
     % figure properties
     xlim([0 max(t)])
@@ -153,28 +186,82 @@ for trial = 1:length(sphere_data)
     title(ss_title,'Fontsize',fs)
     xlabel('Time (sec)','Fontsize',fs)
     ylabel('Temperature (\circC)','Fontsize',fs)
-    legend('Center data','Surface data','Model Fits','Lumped')
+    legend('Center data','Surface data','Center Model','Surface Model','Lumped Capacitence')
     set(gca,'FontSize',fs-2);
     
     
-    log_dimensionless_temp(t,sphere_data(trial).ss_surf,T_i,T_inf,trial,'SS Surf')
-    log_dimensionless_temp(t,sphere_data(trial).ss_cent,T_i,T_inf,trial,'SS Cent')
+    %log_dimensionless_temp(t,sphere_data(trial).ss_surf,sphere_data(trial).ss_cent,T_i,T_inf,trial,'SS')
+    
+    %lin_fit_logs(t,sphere_data(trial).ss_surf,sphere_data(trial).ss_cent,trial,'SS')
     
 end
 
 end
 
-function log_dimensionless_temp(t,T,T_i,T_inf,trial,material)
-theta = (T-T_inf) ./ (T_i-T_inf);
+
+function log_dimensionless_temp(t,T1,T2,T_i,T_inf,trial,material)
+T1 = log((T1-T_inf) ./ (T_i-T_inf));
+T2 = log((T2-T_inf) ./ (T_i-T_inf));
 
 figure('Name','Dimensionless Temp')
-plot(t,log(theta),'o')%,t,T_i,t,T_inf)
+plot(t(1:10:end),T1(1:10:end),'ro',t(1:10:end),T2(1:10:end),'bo')%,t,T_i,t,T_inf)
+hold on
 
-plot_title = sprintf('Dimensionless Temp Plot : %s : Trial %d',material,trial);
+t_crop = t(40:200);
+T1_crop = T1(40:200);
+T2_crop = T2(40:200);
+
+% linear fits
+lin_br = fitlm(t_crop,T1_crop,'linear');
+b_T1 = table2array(lin_br.Coefficients(1,'Estimate'));
+m_T1 = table2array(lin_br.Coefficients(2,'Estimate'));
+
+lin_br = fitlm(t_crop,T2_crop,'linear');
+b_T2 = table2array(lin_br.Coefficients(1,'Estimate'));
+m_T2 = table2array(lin_br.Coefficients(2,'Estimate'));
+
+% plot(t_crop,T1_crop,'bo',t_crop,T2_crop,'go')
+% hold on
+if material == "SS"
+    t_plot = [t_crop-20:t_crop+100];
+else
+    t_plot = [t_crop-20:t_crop+50];
+end
+plot(t_plot,t_plot*m_T1+b_T1,'k',t_plot,t_plot*m_T2+b_T2,'k')
+
+plot_title = sprintf('Log of Dimensionless Temp: %s : Trial %d',material,trial);
 title(plot_title)
-xlabel('Time (s)')
-ylabel('Temperature (\circC)')
-%legend('Dimensionless Temp','Inner Temp','Surface Temp')
+xlabel('Time (s)','FontSize',16)
+ylabel('Temperature (\circC)','FontSize',16)
+legend('Surface','Center')
+end
+
+
+function lin_fit_logs(t,T1,T2,trial,material)
+t = t(20:40);
+T1 = T1(20:40);
+T2 = T2(20:40);
+
+% linear fit for brass
+lin_br = fitlm(t,T1,'linear');
+b_T1 = table2array(lin_br.Coefficients(1,'Estimate'));
+m_T1 = table2array(lin_br.Coefficients(2,'Estimate'));
+
+lin_br = fitlm(t,T2,'linear');
+b_T2 = table2array(lin_br.Coefficients(1,'Estimate'));
+m_T2 = table2array(lin_br.Coefficients(2,'Estimate'));
+
+figure
+plot_title = sprintf("Linear fir for %s, trial %d",material,trial);
+
+plot(t,T1,'bo',t,T2,'go')
+hold on
+plot(t,t*m_T1+b_T1,'k',t,t*m_T2+b_T2,'k')
+
+title(plot_title,'Fontsize',16)
+xlabel('Time (s)','linewidth',2)
+ylabel('ln(\theta)','linewidth',2)
+
 end
 
 
