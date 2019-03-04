@@ -31,7 +31,7 @@ end
 
 function plot_data(t,T,trial)
 % default plotting style
-fs = 16;    % font size
+fs = 24;    % font size
 ms = 10;    % marker size
 lw = 2;     % line width
 
@@ -55,7 +55,7 @@ theta = (T - T_inf)./(T_i - T_inf);
 semilogy(t,theta,'linewidth',lw)
 
 legend('Steel center','Steel surface','Copper Surface','Copper Center')
-set(gca,'FontSize',fs-2);
+set(gca,'FontSize',fs);
 xlabel('Time (sec)','Fontsize',fs)
 ylabel('\theta','Fontsize',fs)
 plot_title = sprintf('Sphere Temperatures : %s',trial);
@@ -78,6 +78,8 @@ T4_crop = ln_theta(40:220,4);
 %%% Apply a linear fit to the four cases
 %%%   - surface and center
 %%%   - SS and Cu
+
+%lin_al.Rsquared.Ordinary For linear fit
 
 % Case 1: SS center
 lin_T1 = fitlm(t_crop,T1_crop,'linear');
@@ -113,8 +115,8 @@ eq_T4 = sprintf('\\theta = %.4ft+%.4f : Cu Center',m_T4,b_T4);
 
 % Set plot appearance
 lgnd = legend('Steel center','Steel surface','Copper Surface','Copper Center',eq_T1,eq_T2,eq_T3,eq_T4,'Location','northeast');
-lgnd.FontSize = 12; %lgnd.NumColumns = 2;
-set(gca,'FontSize',fs-2);
+lgnd.FontSize = 24; %lgnd.NumColumns = 2;
+set(gca,'FontSize',fs);
 xlabel('Time (sec)','Fontsize',fs)
 ylabel('ln(\theta)','Fontsize',fs)
 plot_title = sprintf('ln(\\theta) : %s',trial);
@@ -250,7 +252,7 @@ title(ss_title,'Fontsize',fs)
 xlabel('Time (sec)','Fontsize',fs)
 ylabel('Temperature (\circC)','Fontsize',fs)
 legend('Center data','Surface data','Center Model','Surface Model','Lumped Capacitence Approximation')
-set(gca,'FontSize',fs-2);
+set(gca,'FontSize',fs);
 
 
 %log_dimensionless_temp(t,sphere_data(trial).ss_surf,sphere_data(trial).ss_cent,T_i,T_inf,trial,'SS')
@@ -312,8 +314,8 @@ plot(t_plot,t_plot*m_T1+b_T1,'k',t_plot,t_plot*m_T2+b_T2,'k')
 
 plot_title = sprintf('Log of Dimensionless Temp: %s : Trial %d',material,trial);
 title(plot_title)
-xlabel('Time (s)','FontSize',16)
-ylabel('Temperature (\circC)','FontSize',16)
+xlabel('Time (s)','FontSize',24)
+ylabel('Temperature (\circC)','FontSize',24)
 legend('Surface','Center')
 end
 
