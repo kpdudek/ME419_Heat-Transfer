@@ -58,7 +58,7 @@ legend('Steel center','Steel surface','Copper Surface','Copper Center')
 set(gca,'FontSize',fs-2);
 xlabel('Time (sec)','Fontsize',fs)
 ylabel('\theta','Fontsize',fs)
-plot_title = sprintf('Sphere Temperatures : %s',trial);
+plot_title = sprintf('Sphere Temperatures : Trial %s',trial);
 title(plot_title)
 
 
@@ -117,7 +117,7 @@ lgnd.FontSize = 12; %lgnd.NumColumns = 2;
 set(gca,'FontSize',fs-2);
 xlabel('Time (sec)','Fontsize',fs)
 ylabel('ln(\theta)','Fontsize',fs)
-plot_title = sprintf('ln(\\theta) : %s',trial);
+plot_title = sprintf('ln(\\theta) : Trial %s',trial);
 title(plot_title)
 
 
@@ -146,16 +146,16 @@ tau = rho*cp*V/(h*As);  % timne constant (sec)
 % LCM calculation
 T_copper = T_inf + (T_i-T_inf)*exp(-t/tau);
 plot(t(1:10:end),T_copper(1:10:end),'linewidth',lw)
-lump_legnd = sprintf('Lumped, h = %.3f W/m^2K',h);
+lump_legnd = sprintf('Lumped, h = %d W/m^2K',h);
 hold on
 
 % Plot data
-plot(t(1:10:end),T(1:10:end,3),'go','linewidth',lw,'markersize',ms)
+plot(t(1:10:end),T(1:10:end,3),'ro','linewidth',lw,'markersize',ms)
 hold on
-plot(t(1:10:end),T(1:10:end,4),'rs','linewidth',lw,'markersize',ms)
+plot(t(1:10:end),T(1:10:end,4),'ro','linewidth',lw,'markersize',ms)
 
 % Plot parameters
-cu_title = sprintf('Copper Sphere %s',trial);
+cu_title = sprintf('Copper sphere cooling : Trial %s',trial);
 title(cu_title,'Fontsize',fs)
 xlabel('Time (sec)','Fontsize',fs)
 ylabel('Temperature (\circC)','Fontsize',fs)
@@ -245,7 +245,7 @@ plot(t(1:10:end),T_steel(1:10:end),'m-','LineWidth',lw)
 
 % figure properties
 xlim([0 max(t)])
-ss_title = sprintf('Steel Sphere %s',trial);
+ss_title = sprintf('Steel sphere cooling : Trial %s',trial);
 title(ss_title,'Fontsize',fs)
 xlabel('Time (sec)','Fontsize',fs)
 ylabel('Temperature (\circC)','Fontsize',fs)
