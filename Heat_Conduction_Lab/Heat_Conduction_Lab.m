@@ -181,7 +181,7 @@ hold on
 plot(t(1:10:end),T(1:10:end,2),'bs','linewidth',lw,'markersize',ms)    % plot the edge data
 
 % Steel physical parameters
-h = 1800;   % adjustable guess for h --> 1250 initial value
+%h = 1280;   % adjustable guess for h --> 1250 initial value
 rho = 8238; % kg/m^3
 cp = 468;   % J/kgK
 k = 13.4;   % W/mK
