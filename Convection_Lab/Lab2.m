@@ -21,6 +21,9 @@ D = .074; %m
 r = .037; %m
 L = .085; %m
 thickness = .0003; %m
+As = pi*D*L; %m^2
+As_top = pi/4 * D^2; %m^2
+
 
 
 %%% Theta values for the three cases
@@ -51,6 +54,9 @@ xlabel('Time (s)')
 ylabel('\theta')
 title('\theta vs time for Forced Convection')
 
+[Re,V] = Forced_Convection_Calcs(Ti_FF,Tinf,Pr_air,v_air,k_air,D,h_LCM_FF);
+fprintf('Re = %.3f\nV = %.3f\n',Re,V)
+
 
 %%% Natural Insulated calcs
 Print_Header('Natural Insulated')
@@ -66,6 +72,9 @@ title('\theta vs time for Insulated Natural Convection')
 fprintf('Beta = %.3f\nGr = %.3e\nRa = %.3e\nD>Nu_condit = %d\n',beta_NI,Gr_NI,Ra_NI,D>=Nu_condit_NI)
 fprintf('Nu = %.3f\nh_nat = %.3f\n',Nu_NI,h_NI)
 
+h_NI_ave = (h_LCM_NI + h_NI)/2;
+q_NI = h_NI_ave*As*(Ti_NI-Tinf);
+fprintf('q = %.3f\n',q_NI)
 
 %%% Natural Un-Insulated calcs
 Print_Header('Natural Un-Insulated')
@@ -86,8 +95,10 @@ fprintf('Nu = %.3f\nh_nat = %.3f\n',Nu_NU,h_NU)
 fprintf('\nBeta_top = %.3f\nGr_top = %.3e\nRa_top = %.3e\n',beta_NU_top,Gr_NU_top,Ra_NU_top)
 fprintf('Nu_top = %.3f\nh_nat_top = %.3f\n',Nu_NU_top,h_NU_top)
 
-h_avg = mean([h_NU,h_NU_top]);
-fprintf('\nAverage h = %.3f\n',h_avg)
+h_NU_ave = (h_LCM_NU + h_NU)/2;
+h_NU_top_ave = (h_LCM_NU + h_NU_top)/2;
+q_NU = h_NU_ave*As*(Ti_NI-Tinf) + h_NU_top_ave*As_top*(Ti_NI-Tinf);
+fprintf('q = %.3f\n',q_NU)
 end
 
 
@@ -119,7 +130,7 @@ end
 h_out = h(find(mse_T == min(mse_T)));
 end
 
-function [beta,Gr,Ra,Nu_condition,Nu,h] = Natural_Convection_Values_Cylinder(Ti,Tinf,Pr,v,k_air,D)
+function [beta,Gr,Ra,Nu_condition,Nu,h] = Natural_Convection_Values_Cylinder(Ti,Tinf,Pr,v_air,k_air,D)
 g = 9.8; %m/s
 L = .085; %m
 
@@ -128,7 +139,7 @@ Tfilm = (Ti+Tinf)/2;
 
 beta = 1/Tfilm;
 
-Gr = (g*beta*(Ti-Tinf)*L^3) / (v^2);
+Gr = (g*beta*(Ti-Tinf)*L^3) / (v_air^2);
 
 Ra = Gr * Pr;
 
@@ -139,7 +150,7 @@ Nu = .59 * Ra^.25;
 h = (k_air/D) * Nu;
 end
 
-function [beta,Gr,Ra,Nu,h] = Natural_Convection_Values_TopSurface(Ti,Tinf,Pr,v,k_air,D)
+function [beta,Gr,Ra,Nu,h] = Natural_Convection_Values_TopSurface(Ti,Tinf,Pr,v_air,k_air,D)
 g = 9.8; %m/s
 As = pi/4 * D^2;
 P = pi * D;
@@ -149,7 +160,7 @@ Tfilm = (Ti+Tinf)/2;
 
 beta = 1/Tfilm;
 
-Gr = (g*beta*(Ti-Tinf)*L^3) / (v^2);
+Gr = (g*beta*(Ti-Tinf)*L^3) / (v_air^2);
 
 Ra = Gr * Pr;
 
@@ -157,6 +168,72 @@ Nu = .54 * Ra^.25;
 
 h = (k_air/D) * Nu;
 end
+
+function [Re,V] = Forced_Convection_Calcs(Ti,Tinf,Pr,v_air,k_air,D,h)
+C = .193;
+m = .618;
+
+Nu = h*D/k_air;
+
+Re = nthroot(Nu/(C*Pr^(1/3)),m);
+
+V = (v_air/D) * Re;
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
