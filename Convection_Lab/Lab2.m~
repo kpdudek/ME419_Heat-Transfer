@@ -45,14 +45,20 @@ legend('Forced Fanned','Natural Uninsulated','Natural Insulated','Room Temp')
 Print_Header('Forced Fan')
 h_LCM_FF = LCM_Fit(Ti_FF,theta_FF,time);
 fprintf('h_LCM = %.2f\n',h_LCM_FF)
-figure('Name','Forced Fan LCM'); plot(time,theta_FF,'.',time,LCM_Temps(Ti_FF,time,h_LCM_FF));
+figure('Name','Forced Fan LCM');
+plot(time,theta_FF,'.',time,LCM_Temps(Ti_FF,time,h_LCM_FF));
+
 
 
 %%% Natural Insulated calcs
 Print_Header('Natural Insulated')
 h_LCM_NI = LCM_Fit(Ti_NI,theta_NI,time);
 fprintf('h_LCM = %.2f\n',h_LCM_NI)
-figure('Name','Natural Insulated LCM'); plot(time,theta_NI,'.',time,LCM_Temps(Ti_NI,time,h_LCM_NI));
+figure('Name','Natural Insulated LCM');
+plot(time,theta_NI,'.',time,LCM_Temps(Ti_NI,time,h_LCM_NI));
+xlabel('Time (s)')
+ylabel('\theta')
+title('\theta vs time for Insulated Natural Convection')
 
 [beta_NI,Gr_NI,Ra_NI,Nu_condit_NI,Nu_NI,h_NI] = Natural_Convection_Values_Cylinder(Ti_NI,Tinf,Pr_air,v_air,k_air,D);
 fprintf('Beta = %.3f\nGr = %.3e\nRa = %.3e\nD>Nu_condit = %d\n',beta_NI,Gr_NI,Ra_NI,D>=Nu_condit_NI)
@@ -63,13 +69,18 @@ fprintf('Nu = %.3f\nh_nat = %.3f\n',Nu_NI,h_NI)
 Print_Header('Natural Un-Insulated')
 h_LCM_NU = LCM_Fit(Ti_NU,theta_NU,time);
 fprintf('h_LCM = %.2f\n',h_LCM_NU)
-figure('Name','Natural Un-Insulated LCM'); plot(time,theta_NU,'.',time,LCM_Temps(Ti_NU,time,h_LCM_NU));
+figure('Name','Natural Un-Insulated LCM');
+plot(time,theta_NU,'.',time,LCM_Temps(Ti_NU,time,h_LCM_NU));
+xlabel('Time (s)')
+ylabel('\theta')
+title('\theta vs time for Uninsulated Natural Convection')
 
 [beta_NU,Gr_NU,Ra_NU,Nu_condit_NU,Nu_NU,h_NU] = Natural_Convection_Values_Cylinder(Ti_NU,Tinf,Pr_air,v_air,k_air,D);
 fprintf('Beta = %.3f\nGr = %.3e\nRa = %.3e\nD>Nu_condit = %d\n',beta_NU,Gr_NU,Ra_NU,D>=Nu_condit_NU)
 fprintf('Nu = %.3f\nh_nat = %.3f\n',Nu_NU,h_NU)
 
-[beta_NU_top,Gr_NU_top,Ra_NU_top,Nu_NU_top,h_NU_top] = Natural_Convection_Values_TopSurface(Ti_NU,Tinf,Pr_air,v_air,k_air,D);
+[beta_NU_top,Gr_NU_top,Ra_NU_top,Nu_NU_top,h_NU_top] = ...
+    Natural_Convection_Values_TopSurface(Ti_NU,Tinf,Pr_air,v_air,k_air,D);
 fprintf('\nBeta_top = %.3f\nGr_top = %.3e\nRa_top = %.3e\n',beta_NU_top,Gr_NU_top,Ra_NU_top)
 fprintf('Nu_top = %.3f\nh_nat_top = %.3f\n',Nu_NU_top,h_NU_top)
 
