@@ -2,6 +2,9 @@ function Lab2()
 clc
 load('Data.mat')
 
+set(0, 'DefaultAxesFontSize', 14)
+set(groot,'defaultLineLineWidth',3)
+
 %%% Initial Temps
 Ti_FF = 34.85;
 Ti_NI = 35.44;
@@ -37,7 +40,7 @@ ln_theta_NU = log((nat_uninsulated-Tinf)./(Ti_NU-Tinf));
 
 %%% Plot of raw temp data
 figure('Name','Raw Data')
-plot(time,forced_fanned,'.',time,nat_uninsulated,'.',time,nat_insulated,'.',time,room_temp,'.')
+plot(time,forced_fanned,'.',time,nat_uninsulated,'.',time,nat_insulated,'.',time,room_temp,'.','MarkerSize',12)
 xlabel('Time (s)')
 ylabel('Temp (\circC)')
 title('Raw Cooling Curves')
@@ -49,10 +52,11 @@ Print_Header('Forced Fan')
 h_LCM_FF = LCM_Fit(Ti_FF,theta_FF,time);
 fprintf('h_LCM = %.2f\n',h_LCM_FF)
 figure('Name','Forced Fan LCM');
-plot(time,theta_FF,'.',time,LCM_Temps(Ti_FF,time,h_LCM_FF));
+plot(time,theta_FF,'.',time,LCM_Temps(Ti_FF,time,h_LCM_FF),'MarkerSize',12);
 xlabel('Time (s)')
 ylabel('\theta')
-title('\theta vs time for Forced Convection')
+title('\theta vs t Forced Convection')
+legend('Measured Values','Best Fit')
 
 [Re,V] = Forced_Convection_Calcs(Ti_FF,Tinf,Pr_air,v_air,k_air,D,h_LCM_FF);
 fprintf('Re = %.3f\nV = %.3f\n',Re,V)
@@ -63,10 +67,11 @@ Print_Header('Natural Insulated')
 h_LCM_NI = LCM_Fit(Ti_NI,theta_NI,time);
 fprintf('h_LCM = %.2f\n',h_LCM_NI)
 figure('Name','Natural Insulated LCM');
-plot(time,theta_NI,'.',time,LCM_Temps(Ti_NI,time,h_LCM_NI));
+plot(time,theta_NI,'.',time,LCM_Temps(Ti_NI,time,h_LCM_NI),'MarkerSize',12);
 xlabel('Time (s)')
 ylabel('\theta')
-title('\theta vs time for Insulated Natural Convection')
+title('\theta vs t Insulated Natural Convection')
+legend('Measured Values','Best Fit')
 
 [beta_NI,Gr_NI,Ra_NI,Nu_condit_NI,Nu_NI,h_NI] = Natural_Convection_Values_Cylinder(Ti_NI,Tinf,Pr_air,v_air,k_air,D);
 fprintf('Beta = %.3f\nGr = %.3e\nRa = %.3e\nD>Nu_condit = %d\n',beta_NI,Gr_NI,Ra_NI,D>=Nu_condit_NI)
@@ -81,10 +86,11 @@ Print_Header('Natural Un-Insulated')
 h_LCM_NU = LCM_Fit(Ti_NU,theta_NU,time);
 fprintf('h_LCM = %.2f\n',h_LCM_NU)
 figure('Name','Natural Un-Insulated LCM');
-plot(time,theta_NU,'.',time,LCM_Temps(Ti_NU,time,h_LCM_NU));
+plot(time,theta_NU,'.',time,LCM_Temps(Ti_NU,time,h_LCM_NU),'MarkerSize',12);
 xlabel('Time (s)')
 ylabel('\theta')
-title('\theta vs time for Uninsulated Natural Convection')
+title('\theta vs t Uninsulated Natural Convection')
+legend('Measured Values','Best Fit')
 
 [beta_NU,Gr_NU,Ra_NU,Nu_condit_NU,Nu_NU,h_NU] = Natural_Convection_Values_Cylinder(Ti_NU,Tinf,Pr_air,v_air,k_air,D);
 fprintf('Beta = %.3f\nGr = %.3e\nRa = %.3e\nD>Nu_condit = %d\n',beta_NU,Gr_NU,Ra_NU,D>=Nu_condit_NU)
@@ -103,9 +109,9 @@ end
 
 
 function Print_Header(label)
-fprintf('\n***********************************************************************************\n')
+fprintf('\n*************************************************************\n')
 fprintf('%s\n',label)
-fprintf('***********************************************************************************\n')
+fprintf('*************************************************************\n')
 end
 
 function theta = LCM_Temps(Ti,t,h)
