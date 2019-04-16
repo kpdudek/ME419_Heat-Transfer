@@ -143,7 +143,7 @@ L = .085; %m
 
 Tfilm = (Ti+Tinf)/2;
 
-beta = 1/Tfilm;
+beta = 1/(Tfilm+273);
 
 Gr = (g*beta*(Ti-Tinf)*L^3) / (v_air^2);
 
@@ -164,7 +164,7 @@ L = As/P; %m
 
 Tfilm = (Ti+Tinf)/2;
 
-beta = 1/Tfilm;
+beta = 1/(Tfilm+273);
 
 Gr = (g*beta*(Ti-Tinf)*L^3) / (v_air^2);
 
